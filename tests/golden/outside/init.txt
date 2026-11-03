@@ -1,0 +1,4 @@
+exit=0
+--- stdout
+<HOME>/estado/r2
+--- stderr

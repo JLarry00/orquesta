@@ -1,0 +1,4 @@
+exit=0
+--- stdout
+preparado sin ventana: <HOME>/estado/r2/agents/b1/start.sh
+--- stderr

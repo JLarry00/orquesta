@@ -1,0 +1,4 @@
+cwd=<HOME>/ws
+[-p] [--session-id] [<SID:a1>] [-n] [a1] [--model] [opus] [/color red] 
+cwd=<HOME>/ws
+[-p] [--session-id] [<SID:a2>] [-n] [a2] [--model] [sonnet] [/color red] 

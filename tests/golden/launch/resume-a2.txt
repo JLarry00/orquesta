@@ -1,0 +1,4 @@
+exit=0
+--- stdout
+reabierto 'a2' en una ventana nueva
+--- stderr

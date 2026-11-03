@@ -1,0 +1,11 @@
+exit=0
+--- stdout
+Orquesta r1  (creada <TS>)
+Workspace: <HOME>/ws   Estado: <HOME>/ws/.orquesta/r1
+Objetivo: objetivo de prueba
+- coord-nuevo [coordinador]
+  - a1 [running, cerrado] opus/high · tema uno
+    - a2 [waiting, cerrado] sonnet/medium · tema dos
+Comunicación (por defecto manual): a1<->a2=libre
+--- stderr
+orq: el coordinador ahora se llama 'coord-nuevo' (antes 'coord'); board actualizado

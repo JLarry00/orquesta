@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "<HOME>/estado/r2",
+      "<HOME>/.claude/orquesta"
+    ],
+    "allow": [
+      "Bash(<HOME>/.claude/orquesta/bin/orq *)",
+      "Bash(~/.claude/orquesta/bin/orq *)",
+      "Bash(orq *)",
+      "Edit(/<HOME>/estado/r2/agents/**)",
+      "Read(<HOME>/.claude/orquesta/**)"
+    ],
+    "deny": [
+      "Edit(/<HOME>/estado/r2/board.json)",
+      "Edit(/<HOME>/estado/r2/comms.json)",
+      "Edit(/<HOME>/estado/r2/messages.log)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "SendMessage",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 <GATE> --run-dir <HOME>/estado/r2 --agent b1",
+            "timeout": 15,
+            "statusMessage": "orquesta: revisando mensaje…"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "SendMessage",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 <GATE> --run-dir <HOME>/estado/r2 --agent b1 --post",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

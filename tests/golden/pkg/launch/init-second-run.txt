@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: esta sesión ya dirige la orquesta 'r1', que sigue abierta. Una orquesta por director: abre otro chat para esta, o ciérrala antes con `orq close r1` (--force solo con OK de <APROBADOR>)

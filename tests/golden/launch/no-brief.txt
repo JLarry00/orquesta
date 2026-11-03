@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: falta el brief: escribe <HOME>/ws/.orquesta/r1/agents/a1/brief.md antes de lanzar

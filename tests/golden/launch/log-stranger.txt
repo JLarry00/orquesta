@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: esta sesión no es ni el coordinador ni un agente de la orquesta: no puede escribir en el log

@@ -1,0 +1,12 @@
+exit=0
+--- stdout
+Orquesta r1  (creada <TS>)
+Workspace: <HOME>/ws   Estado: <HOME>/ws/.orquesta/r1
+Objetivo: objetivo de prueba
+- coord [coordinador]
+  - a1 [running, vivo] opus/high · tema uno
+      | (sin checkpoint aún)
+    - a2 [waiting, cerrado] sonnet/medium · tema dos
+        | (sin checkpoint aún)
+Comunicación (por defecto manual): a1<->a2=libre
+--- stderr

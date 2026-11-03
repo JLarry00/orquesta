@@ -1,0 +1,5 @@
+exit=0
+--- stdout
+<HOME>/estado/r2
+--- stderr
+orq: color de la orquesta: 🔴 red. Para que la ventana del director también lo lleve, escribe en ella: /color red

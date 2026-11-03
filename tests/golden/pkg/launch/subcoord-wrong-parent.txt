@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: 'a1' solo puede lanzar workers suyos (--parent a1)

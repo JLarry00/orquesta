@@ -1,0 +1,4 @@
+exit=0
+--- stdout
+preparado sin abrir: <HOME>/ws/.orquesta/r1/agents/a1/start.sh
+--- stderr

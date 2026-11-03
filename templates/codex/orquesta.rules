@@ -1,0 +1,9 @@
+# Orquesta: reglas de ejecución de Codex. Las pone ./install.sh de orquesta y ./install.sh --deshacer las quita.
+#
+# `orq` escribe en {{orq_home}} y en la carpeta de cada orquesta, y abre chats con `open codex://…`. Con el
+# sandbox no podría, así que se ejecuta fuera de él y sin preguntar (solo si el comando es `orq …` a secas).
+# Los mensajes entre agentes van por send_message_to_thread (los vigila la puerta, hooks/codex_gate.py) o por
+# `orq send` (solo parejas libres); `codex queue` directo queda prohibido.
+prefix_rule(pattern=["orq"], decision="allow", justification="orquesta: comandos de coordinación")
+prefix_rule(pattern=["{{orq_bin}}"], decision="allow", justification="orquesta: comandos de coordinación")
+prefix_rule(pattern=["codex", "queue"], decision="forbidden", justification="orquesta: para escribir a otro agente usa send_message_to_thread u `orq send`")

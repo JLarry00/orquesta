@@ -1,0 +1,5 @@
+-e tell application "Terminal"
+ do script "bash <HOME>/ws/.orquesta/r1/agents/a2/resume.sh"
+ activate
+end tell
+---

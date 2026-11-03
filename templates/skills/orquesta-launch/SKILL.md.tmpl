@@ -1,0 +1,91 @@
+---
+name: orquesta-launch
+description: Dirige o coordina el trabajo de varios agentes, cada uno en {{su_sesion}} (la «orquesta»). Úsala cuando {{usuario}} pida lanzar workers o agentes (launch, spawn, «lanzar»), repartir trabajo, hacer de director o de coordinador, cambiar quién puede hablar con quién (comunicación libre/manual), ver el árbol de la orquesta o reabrir un worker cerrado. También la usan los workers que lanzan sus propios workers.
+---
+
+# Orquesta: dirigir y coordinar workers
+
+Vocabulario:
+- **Director:** el coordinador de primer nivel de la orquesta. Si {{usuario}} te pide montar una orquesta, eres tú.
+- **Coordinador:** quien lanza workers, respecto a ellos. El director es coordinador de los suyos, y un worker que lanza otros es su coordinador.
+- **Worker:** cualquier agente lanzado por un coordinador (todos menos el director).
+- **Encargo:** lo que le pides a un worker (`brief.md`). **Entrega:** lo que te devuelve (`result.md`).
+
+Como coordinador, divides el trabajo, escribes un encargo para cada worker, lo lanzas en {{nueva_sesion}} e integras sus entregas. Los workers siguen `{{protocolo}}`, que vale la pena tener presente para saber qué esperar de ellos.
+
+Herramienta: `orq` (`orq -h`), en el PATH; si no aparece, `{{orq_bin}}`. Estado: `orq where <run>` te da la carpeta de la orquesta (por defecto `<workspace>/.orquesta/<run>/`).
+
+## 1. La orquesta (una por objetivo de trabajo, y una por director)
+
+- Comprueba si ya existe con `orq runs`. Si no existe, créala con `orq init <run> --coordinator <tu-nombre> --goal "<objetivo>"`. Así pasas a ser su director.
+- **Color:** cada orquesta abierta tiene su color, y sus workers abren con él. `orq init` elige uno libre (o el que pidas con `--color`) y te dice cuál. {{color_director}}
+- **Workspace:** es la carpeta desde la que ejecutas `orq init` (o la que pases con `--workspace`). Todos los workers se lanzan ahí, en el mismo proyecto que tú. {{carpeta_extra}}
+- **Una orquesta abierta por director.** `orq init` se niega si esta sesión ya dirige otra que sigue abierta. Para otro objetivo, {{usuario}} abre otro chat. Cuando una orquesta termina, ciérrala con `orq close <run>` (se reabre con `--reopen`).
+- `<tu-nombre>` es {{nombre_sesion}}. Ejecuta `orq init` desde esta misma sesión: `orq` guarda su id, que no cambia aunque la sesión se reinicie, y la orquesta usa el arnés de esta sesión, así que tus workers serán del mismo arnés que tú.
+- {{nombre_cambia}}
+- Si la sesión del director se cierra para siempre, otra sesión del mismo arnés toma el relevo con `orq coordinator <run> <su-nombre>`, ejecutado desde ella. Después avisa a los workers vivos del nombre nuevo.
+- `<run>` va en kebab-case y corto, por ejemplo `informe-ventas`.
+
+## 2. Decidir qué lanzar
+
+- **{{worker_o_subagente}}** Worker si {{usuario}} querrá hablar con él o el trabajo es largo. {{subagente_corto}} si es corto y no hace falta conversación: búsquedas, revisiones, comprobaciones puntuales.
+- Cada worker tiene un objetivo que cabe en una frase. Si no cabe, divídelo.
+- Evita que dos workers editen los mismos archivos o el mismo worktree.
+- Tope de {{max_vivos}} agentes vivos a la vez (lo fija `max_alive` en `{{config}}`). `orq launch` se niega a pasar de ahí. Saltárselo con `--force` solo con OK de {{aprobador}}.
+
+### Modelo y esfuerzo según dificultad
+
+{{tabla_modelos}}
+
+## 3. Escribir el encargo
+
+Escríbelo en `<carpeta de la orquesta>/agents/<nombre>/brief.md` antes de lanzar. El worker solo sabe lo que pone ahí, así que incluye todo lo que necesite:
+
+```
+# Encargo: <nombre>
+Coordinador: <tu-nombre>      Orquesta: <run>
+## Objetivo
+<una frase>
+## Contexto
+<qué pasa y por qué importa; la tarea, las decisiones previas, archivos y rutas concretas, lo que ya se sabe y lo ya descartado>
+## Alcance
+Dentro: …
+Fuera: … (si aparece algo de esto, se apunta como propuesta y no se hace)
+## Restricciones
+<reglas que pesan especialmente aquí: git, servicios de pago, servidores que no se reinician, worktree en el que trabajar…>
+## Hecho cuando
+<criterio verificable>
+## Entrega
+result.md según el protocolo, y aviso a <tu-nombre>.
+## Comunicación
+Libre con: <tu-nombre> [y otros]. Manual con: el resto.
+```
+
+## 4. Lanzar
+
+```
+orq launch <run> <nombre> --parent <tu-nombre> --topic "<frase>" --model <m> --effort <e> --why "<porqué>" [--dir <carpeta extra>]
+```
+
+{{al_lanzar}} Dile a {{usuario}} qué worker has lanzado, con qué modelo y esfuerzo, y por qué.
+
+## 5. Comunicación
+
+- Ver la matriz: `orq comms <run>`.
+- Cambiar una pareja: `orq comms <run> --pair <a> <b> libre|manual`.
+- Cambiar el modo por defecto: `orq comms <run> --default libre|manual`.
+
+Solo el director puede cambiar la matriz; `orq` lo rechaza si lo intenta un worker. Un coordinador y sus workers hablan siempre libremente. «Manual» significa que {{aprobador}} aprueba cada mensaje en {{donde_aprueba_remitente}}. Cambia la matriz solo cuando {{aprobador}} lo pida.
+
+## 6. Seguir e integrar
+
+- Árbol y estados: `orq status <run>`. Con `-v` añade el inicio de cada checkpoint.
+- Cuando un worker avisa de que ha terminado, lee su entrega (`result.md`; no te fíes solo del mensaje), intégrala y cuéntaselo a {{usuario}}. Deja claro lo que el worker ha verificado y lo que no.
+- Si algo no cuadra, pregúntale al worker antes de corregirlo por tu cuenta.
+
+## 7. Cerrar y reabrir
+
+- {{cerrar_worker}}
+- Para reabrirlo con todo su historial: `orq resume <run> <nombre>`, que {{reabrir}}.
+- Cuando la orquesta entera está terminada e integrada, `orq close <run>` (con OK de {{aprobador}}). Así esta sesión queda libre para dirigir otra, y el color de la orquesta queda libre.
+{{reglas_de_la_casa}}

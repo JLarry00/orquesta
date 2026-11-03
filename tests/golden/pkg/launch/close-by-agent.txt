@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: solo el director puede cerrar o reabrir la orquesta

@@ -1,0 +1,4 @@
+exit=0
+--- stdout
+orquesta 'r1' cerrada
+--- stderr

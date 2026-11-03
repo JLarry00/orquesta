@@ -1,0 +1,37 @@
+{
+  "run": "r1",
+  "created": "<TS>",
+  "goal": "objetivo de prueba",
+  "workspace": "<HOME>/ws",
+  "coordinator": "coord-nuevo",
+  "coordinator_session": "<SID:coord>",
+  "agents": {
+    "a1": {
+      "parent": "coord-nuevo",
+      "topic": "tema uno",
+      "model": "opus",
+      "effort": "high",
+      "why": "porque sí",
+      "cwd": "<HOME>/ws",
+      "dirs": [
+        "<HOME>/extra"
+      ],
+      "session_id": "<SID:a1>",
+      "state": "running",
+      "launched_at": "<TS>"
+    },
+    "a2": {
+      "parent": "a1",
+      "topic": "tema dos",
+      "model": "sonnet",
+      "effort": "medium",
+      "why": "",
+      "cwd": "<HOME>/ws",
+      "dirs": [],
+      "session_id": "<SID:a2>",
+      "state": "waiting",
+      "launched_at": "<TS>"
+    }
+  },
+  "closed": "<TS>"
+}

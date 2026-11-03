@@ -1,0 +1,6 @@
+{
+  "default": "manual",
+  "pairs": {
+    "a1<->a2": "libre"
+  }
+}

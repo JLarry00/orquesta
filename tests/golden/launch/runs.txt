@@ -1,0 +1,5 @@
+exit=0
+--- stdout
+r1	cerrada	2 agentes	objetivo de prueba
+	<HOME>/ws/.orquesta/r1
+--- stderr

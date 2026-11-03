@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: 'a1' ya está vivo; búscalo en sus ventanas abiertas

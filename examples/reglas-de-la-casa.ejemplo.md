@@ -1,0 +1,6 @@
+- Antes de crear o borrar un worktree, pide el OK de quien aprueba.
+- No uses servicios de pago (APIs con créditos, scrapers, despliegues) sin permiso expreso en cada caso.
+- No reinicies servidores, ni siquiera los locales de desarrollo, sin permiso.
+- Commits solo en ramas de trabajo, nunca en `main`. Nada de push sin permiso.
+- En el brief, enlaza la tarea del gestor de tareas y las decisiones de arquitectura que apliquen.
+- Lo que veas de paso y no sea de tu tarea, apúntalo como propuesta en `result.md`; no lo resuelvas.

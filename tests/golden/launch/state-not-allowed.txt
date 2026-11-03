@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: 'a2' no puede cambiar el estado de 'a1': solo de sí mismo o de sus descendientes

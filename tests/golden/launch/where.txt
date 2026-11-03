@@ -1,0 +1,4 @@
+exit=0
+--- stdout
+<HOME>/ws/.orquesta/r1
+--- stderr

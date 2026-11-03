@@ -1,0 +1,102 @@
+## a-coord
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "permissionDecisionReason": "[orquesta] a -> coord: libre (padre<->hijo)"}}
+--- stderr
+
+## a-coord-renamed
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "permissionDecisionReason": "[orquesta] a -> coord-nuevo: libre (padre<->hijo)"}}
+--- stderr
+
+## a-b-pair-libre
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "permissionDecisionReason": "[orquesta] a -> b: libre (pareja)"}}
+--- stderr
+
+## b-c-pair-manual
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "[orquesta] b -> c: manual (pareja). \u00bfLo dejas pasar?"}}
+--- stderr
+
+## c-d-child
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "permissionDecisionReason": "[orquesta] c -> d: libre (padre<->hijo)"}}
+--- stderr
+
+## a-d-default
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "[orquesta] a -> d: manual (por defecto). \u00bfLo dejas pasar?"}}
+--- stderr
+
+## ref-suffix
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "permissionDecisionReason": "[orquesta] a -> b: libre (pareja)"}}
+--- stderr
+
+## recipient-content
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "permissionDecisionReason": "[orquesta] d -> c: libre (padre<->hijo)"}}
+--- stderr
+
+## unknown-recipient
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "[orquesta] a -> nadie: manual (por defecto). \u00bfLo dejas pasar?"}}
+--- stderr
+
+## bad-stdin
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "[orquesta] no he podido leer el mensaje (Expecting value: line 1 column 1 (char 0)); confirma t\u00fa"}}
+--- stderr
+
+## old-format
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "permissionDecisionReason": "[orquesta] a -> coord: libre (padre<->hijo)"}}
+--- stderr
+
+## old-format-unknown-run
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "[orquesta] no encuentro la orquesta ('nope'); confirma t\u00fa"}}
+--- stderr
+
+## missing-run-dir
+exit=0
+--- stdout
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "[orquesta] no he podido evaluar el mensaje ([Errno 2] No such file or directory: '<HOME>/nada/board.json'); confirma t\u00fa"}}
+--- stderr
+
+## post-str
+exit=0
+--- stdout
+--- stderr
+
+## post-dict
+exit=0
+--- stdout
+--- stderr
+
+## post-list
+exit=0
+--- stdout
+--- stderr
+
+## post-unknown-run
+exit=0
+--- stdout
+--- stderr
+
+## post-bad-stdin
+exit=0
+--- stdout
+--- stderr

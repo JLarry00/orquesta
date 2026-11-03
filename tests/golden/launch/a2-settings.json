@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "<HOME>/.claude/orquesta"
+    ],
+    "allow": [
+      "Bash(<HOME>/.claude/orquesta/bin/orq *)",
+      "Bash(~/.claude/orquesta/bin/orq *)",
+      "Bash(orq *)",
+      "Edit(/<HOME>/ws/.orquesta/r1/agents/**)",
+      "Write(/<HOME>/ws/.orquesta/r1/agents/**)",
+      "Read(<HOME>/.claude/orquesta/**)"
+    ],
+    "deny": [
+      "Edit(/<HOME>/ws/.orquesta/r1/board.json)",
+      "Edit(/<HOME>/ws/.orquesta/r1/comms.json)",
+      "Edit(/<HOME>/ws/.orquesta/r1/messages.log)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "SendMessage",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 <GATE> --run-dir <HOME>/ws/.orquesta/r1 --agent a2",
+            "timeout": 15,
+            "statusMessage": "orquesta: revisando mensaje…"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "SendMessage",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 <GATE> --run-dir <HOME>/ws/.orquesta/r1 --agent a2 --post",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

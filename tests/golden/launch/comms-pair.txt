@@ -1,0 +1,9 @@
+exit=0
+--- stdout
+{
+  "default": "manual",
+  "pairs": {
+    "a1<->a2": "libre"
+  }
+}
+--- stderr

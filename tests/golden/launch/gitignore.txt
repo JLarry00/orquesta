@@ -1,0 +1,2 @@
+# estado local de la orquesta: fuera de git
+*

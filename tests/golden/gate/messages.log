@@ -1,0 +1,13 @@
+{"ts": "<TS>", "event": "attempt", "from": "a", "to": "coord", "mode": "libre", "summary": "s", "message": "hola"}
+{"ts": "<TS>", "event": "attempt", "from": "a", "to": "coord-nuevo", "mode": "libre", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "attempt", "from": "a", "to": "b", "mode": "libre", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "attempt", "from": "b", "to": "c", "mode": "manual", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "attempt", "from": "c", "to": "d", "mode": "libre", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "attempt", "from": "a", "to": "d", "mode": "manual", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "attempt", "from": "a", "to": "b", "mode": "libre", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "attempt", "from": "d", "to": "c", "mode": "libre", "summary": "", "message": "x"}
+{"ts": "<TS>", "event": "attempt", "from": "a", "to": "nadie", "mode": "manual", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "attempt", "from": "a", "to": "coord", "mode": "libre", "summary": "", "message": "m"}
+{"ts": "<TS>", "event": "sent", "from": "a", "to": "coord", "response": "ok"}
+{"ts": "<TS>", "event": "sent", "from": "a", "to": "b", "response": {"success": true}}
+{"ts": "<TS>", "event": "sent", "from": "a", "to": "b", "response": "[1, 2]"}

@@ -1,0 +1,4 @@
+exit=1
+--- stdout
+--- stderr
+orq: solo el director (por orden de <APROBADOR>) puede cambiar la matriz de comunicación

@@ -1,0 +1,48 @@
+---
+name: orquesta-resume
+description: Pone a {{usuario}} al día sobre un worker de la orquesta, un tema o una orquesta entera cuando vuelve de otra cosa. Úsala cuando diga «retomar», «ponme al día», «¿dónde estábamos con…?», «¿cómo va X?», «resumen de la orquesta», o vuelva a un tema o worker que había dejado. Solo lee.
+---
+
+# Retomar: poner a {{usuario}} en contexto
+
+Cambiar de tema hace perder el hilo. Tu trabajo aquí es que {{usuario}} sepa en un minuto dónde está y qué le toca decidir, sin tener que releer nada. Esta skill solo lee: no cambies estado ni mandes mensajes.
+
+## 1. Situarte
+
+- `orq runs` lista las orquestas (si `orq` no aparece, `{{orq_bin}}`).
+- Si {{usuario}} nombra un worker o un tema, búscalo con `orq status <run>` en la orquesta que encaje. Si hay dudas, pregúntale cuál.
+- Sin argumento: haz un resumen de la orquesta entera (paso 3).
+
+## 2. Un worker o tema
+
+Lee, en `<carpeta de la orquesta>/agents/<n>/` (la carpeta te la da `orq where <run>`):
+- `brief.md` (su encargo): para qué existe.
+- `checkpoint.md`: dónde está.
+- Las últimas 15 líneas de `log.md`: cómo ha llegado hasta ahí.
+- `result.md` (su entrega), si existe.
+- En `messages.log`, las últimas líneas donde aparece en `from` o en `to`. Cada mensaje deja un `attempt` (con su modo libre/manual) y, si se envió, un `sent` detrás. Un `attempt` sin `sent` es un mensaje que {{aprobador}} rechazó o que falló.
+
+Si es útil, mira también sus propios workers. Compara la hora del checkpoint con la del log: si el checkpoint es más antiguo que la última entrada del log, dilo, porque puede estar desfasado.
+
+Responde en español con este formato y sin pasarte de ~15 líneas:
+
+```
+**<nombre>** · <estado> · <vivo/cerrado> · <modelo/esfuerzo>
+Para qué: <una frase>
+Dónde estamos: <2-3 líneas>
+Decidido: <lo clave y su porqué>
+Pendiente: <siguiente paso>
+→ Te toca: <la decisión o acción concreta de {{usuario}}, o «nada, sigue solo»>
+```
+
+Si el worker está cerrado, termina con el comando para reabrirlo: `orq resume <run> <n>`.
+
+## 3. Orquesta entera
+
+Ejecuta `orq status <run> -v` y resume:
+- El objetivo.
+- Una línea por worker con su estado.
+- Primero lo que está `blocked`, `waiting` o pendiente de {{usuario}}.
+- Las entregas nuevas que nadie ha integrado todavía.
+
+Cierra con «→ Te toca:» y la lista de decisiones pendientes de {{usuario}}, de la más urgente a la menos.
