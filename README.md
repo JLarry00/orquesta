@@ -191,8 +191,11 @@ Si cambias el archivo después, ejecuta `orq render`. Los workers ya lanzados lo
 
 ```sh
 python3 -m unittest            # tests; los «golden» comparan con el comportamiento de la versión anterior
+scripts/check-private.py       # filtro de datos privados (archivos y commits sin subir); pásalo antes de un push
 scripts/make-zip.sh            # dist/orquesta-<versión>.zip
 ```
+
+Antes de subir un cambio hay una puerta (tests, filtro y dos revisiones de IA en local): [`AGENTS.md`](AGENTS.md). Ramas, comprobaciones de GitHub Actions y cómo se publica una versión: [`docs/flujo-de-trabajo.md`](docs/flujo-de-trabajo.md).
 
 Estructura:
 

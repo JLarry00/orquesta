@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 from orq.colors import PALETTE
-from tests.support import APPROVER, Sandbox, golden, implementations
+from tests.support import APPROVER, V1, V1_MISSING, Sandbox, golden, implementations
 
 COORD_SID = "c0000000-0000-4000-8000-000000000001"
 STRANGER_SID = "e0000000-0000-4000-8000-00000000000e"
@@ -38,6 +38,11 @@ class GoldenCase(unittest.TestCase):
 
     def each_impl(self):
         impls = implementations()
+        if V1 not in impls:
+            # CI and clean machines have no v1: the package is still compared with the stored golden files,
+            # but v1 itself is not re-run. Reported as a skipped subtest, never as a silent pass.
+            with self.subTest(impl="v1"):
+                self.skipTest(V1_MISSING)
         if not impls:
             self.skipTest("no implementation available")
         for cls in impls:

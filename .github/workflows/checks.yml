@@ -1,0 +1,77 @@
+# Tests and private-data filter. Runs in both repos (development and public) on every push and pull request,
+# and is called by publish.yml before publishing. Job names `tests` and `private-data` are the required status
+# checks of the public main (docs/flujo-de-trabajo.md).
+name: checks
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_call:
+    secrets:
+      FORBIDDEN_WORDS:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.9"
+      - name: Tests (Python 3.9, sin la v1)
+        env:
+          ORQ_FORBIDDEN_WORDS: ${{ secrets.FORBIDDEN_WORDS }}
+        run: python -m unittest -v
+
+  private-data:
+    name: private-data
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the commit range needs the history
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.9"
+      - name: Filtro de datos privados
+        env:
+          ORQ_FORBIDDEN_WORDS: ${{ secrets.FORBIDDEN_WORDS }}
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          REF_NAME: ${{ github.ref_name }}
+          # Pull requests from forks get no secrets, so there are no private words to look for.
+          FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          set -eu
+          if [ "$EVENT" = pull_request ]; then
+            range="$BASE_SHA..$HEAD_SHA"
+          elif [ "$EVENT" = push ] && [ -n "$BEFORE" ] && ! echo "$BEFORE" | grep -qE '^0+$' \
+               && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            range="$BEFORE..$HEAD_SHA"
+          elif [ "$EVENT" = push ]; then
+            # new branch (or rewritten history): its commits that no other branch has
+            others=$(git for-each-ref --format='%(refname)' refs/remotes/origin | grep -vxF "refs/remotes/origin/$REF_NAME" | grep -vxF 'refs/remotes/origin/HEAD' || true)
+            range="$HEAD_SHA --not $others"
+          else
+            range=none # workflow_dispatch: only the files (the published commit is built fresh)
+          fi
+          echo "Commits revisados: $range"
+          if [ "$FORK" = true ]; then
+            echo "::warning::PR desde un fork: sin palabras privadas (los secretos no llegan a los forks)."
+            python scripts/check-private.py --range "$range"
+          else
+            python scripts/check-private.py --range "$range" --require-words
+          fi

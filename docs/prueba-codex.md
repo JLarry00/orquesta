@@ -1,6 +1,6 @@
 # Prueba de orquesta con la app de Codex
 
-Guía para probar la versión 0.9.0 en un ordenador con la app de Codex. Primero la app; la CLI de Codex vendrá en
+Guía para probar la versión 0.9 (0.9.0 o posterior) en un ordenador con la app de Codex. Primero la app; la CLI de Codex vendrá en
 otra ronda.
 
 Todo lo de Codex está construido a partir de su código fuente (rust-v0.166.0) y su documentación, **sin haberlo
@@ -67,7 +67,7 @@ Cada paso dice: qué hacer → qué observar → qué hacer si falla. Apunta ✓
      - qué sale en lo segundo (orquesta usa `com.openai.codex` o `com.openai.chat` para saber que es la app).
    - **Si falla:** si el id sale vacío, orquesta no puede reconocer a los agentes de la app. Para aquí y avisa.
 5. **`orq` sin sandbox.** En A, pide que ejecute `orq --version`, y después `orq runs`.
-   - **Observa:** si pide permiso. Con la regla de orquesta no debería, y debería responder `orq 0.9.0`.
+   - **Observa:** si pide permiso. Con la regla de orquesta no debería, y debería responder con la versión del zip (`orq 0.9.…`).
    - **Si falla:** apunta el aviso o el error. Si dice que no encuentra `orq`, repite con la ruta completa, `~/.orquesta/bin/orq --version`.
 
 ## C. La puerta, con la sonda
