@@ -1,0 +1,62 @@
+# Tags and releases each version merged into the public main: when the version in orq/__init__.py has no Release
+# yet, it creates the annotated tag vX.Y.Z on that commit and a GitHub Release ("Latest") with the CHANGELOG
+# section as notes. If the Release already exists, it does nothing. Only in the public repo: in the development
+# repo (which has this same file) the job is skipped.
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'JLarry00/orquesta'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write # tag and Release
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2 # this commit and its parents: the previous public version
+          persist-credentials: false
+      - name: Tag y Release de la versión
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -eu
+          v=$(python3 scripts/release_notes.py version)
+          tag="v$v"
+          if gh release view "$tag" -R "$REPO" >/dev/null 2>&1; then
+            echo "La Release $tag ya existe: nada que hacer."; exit 0
+          fi
+          python3 scripts/release_notes.py notes "$v" --link-base "https://github.com/$REPO/blob/$tag" > notes.md
+          prev=$(python3 scripts/release_notes.py version --rev HEAD^1 2>/dev/null || true)
+          if [ -n "$prev" ] && [ "$prev" != "$v" ] && gh api "repos/$REPO/git/ref/tags/v$prev" >/dev/null 2>&1; then
+            printf '\n**Todos los cambios desde %s:** https://github.com/%s/compare/v%s...%s\n' \
+              "$prev" "$REPO" "$prev" "$tag" >> notes.md
+          fi
+          if gh api "repos/$REPO/git/ref/tags/$tag" >/dev/null 2>&1; then
+            tagged=$(gh api "repos/$REPO/commits/$tag" --jq .sha)
+            if [ "$tagged" != "$SHA" ]; then
+              echo "::error::El tag $tag ya existe en otro commit ($tagged), sin Release: revísalo a mano."; exit 1
+            fi
+            echo "El tag $tag ya existe (de una ejecución anterior): solo falta la Release."
+          else
+            # An annotated tag through the API: first the tag object, then the reference that points to it.
+            obj=$(gh api "repos/$REPO/git/tags" -f tag="$tag" -f message="orquesta $v" -f object="$SHA" \
+                    -f type=commit -f 'tagger[name]=github-actions[bot]' \
+                    -f 'tagger[email]=41898282+github-actions[bot]@users.noreply.github.com' --jq .sha)
+            gh api "repos/$REPO/git/refs" -f ref="refs/tags/$tag" -f sha="$obj" >/dev/null
+            echo "Tag anotado $tag en $SHA."
+          fi
+          gh release create "$tag" -R "$REPO" --verify-tag --latest --title "orquesta $v" --notes-file notes.md
+          echo "Release $tag publicada."

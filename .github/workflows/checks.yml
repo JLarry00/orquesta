@@ -1,6 +1,7 @@
-# Tests and private-data filter. Runs in both repos (development and public) on every push and pull request,
-# and is called by publish.yml before publishing. Job names `tests` and `private-data` are the required status
-# checks of the public main (docs/flujo-de-trabajo.md).
+# Tests and private-data filter. Runs in both repos (development and public) on every push to a branch and every
+# pull request, and is called by publish.yml on the version tag before publishing (the published commit is built
+# fresh, with the noreply identity). Job names `tests` and `private-data` are the required status checks of the
+# public main (docs/flujo-de-trabajo.md).
 name: checks
 
 on:
@@ -8,6 +9,12 @@ on:
     branches: ["**"]
   pull_request:
   workflow_call:
+    inputs:
+      ref:
+        description: "Ref to check (publish passes the version tag)"
+        required: false
+        type: string
+        default: ""
     secrets:
       FORBIDDEN_WORDS:
         required: false
@@ -23,6 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
@@ -39,6 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           fetch-depth: 0 # the commit range needs the history
           persist-credentials: false
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -52,11 +61,15 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          INPUT_REF: ${{ inputs.ref }}
           # Pull requests from forks get no secrets, so there are no private words to look for.
           FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
         run: |
           set -eu
-          if [ "$EVENT" = pull_request ]; then
+          if [ -n "$INPUT_REF" ] || [ "$REF_TYPE" = tag ]; then
+            range=none # publish, on a version tag: its commits were checked in their pull requests
+          elif [ "$EVENT" = pull_request ]; then
             range="$BASE_SHA..$HEAD_SHA"
           elif [ "$EVENT" = push ] && [ -n "$BEFORE" ] && ! echo "$BEFORE" | grep -qE '^0+$' \
                && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
@@ -66,7 +79,7 @@ jobs:
             others=$(git for-each-ref --format='%(refname)' refs/remotes/origin | grep -vxF "refs/remotes/origin/$REF_NAME" | grep -vxF 'refs/remotes/origin/HEAD' || true)
             range="$HEAD_SHA --not $others"
           else
-            range=none # workflow_dispatch: only the files (the published commit is built fresh)
+            range=none # workflow_dispatch: only the files
           fi
           echo "Commits revisados: $range"
           if [ "$FORK" = true ]; then

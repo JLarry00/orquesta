@@ -13,7 +13,7 @@ conocido; tú buscas **lo que una lista y unas expresiones regulares no ven**.
 **Solo lees: no arreglas nada.** Y lo más importante: **nunca copies el dato privado en tu informe** (ni entero ni
 casi entero). Di dónde está (`ruta:línea` o el commit), de qué tipo es y cómo arreglarlo.
 
-**Entrada:** la base (por defecto `origin/develop`). **Salida:** `APPROVE` o `REJECT`.
+**Entrada:** la base (por defecto `origin/dev`). **Salida:** `APPROVE` o `REJECT`.
 
 ## Qué buscas
 
