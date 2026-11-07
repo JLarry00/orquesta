@@ -14,7 +14,7 @@ Lee el **diff completo** del cambio y compruébalo contra lo que pretende y cont
 **Solo lees: no arreglas nada, no haces commits ni push.** Los datos privados son cosa de `privacy-auditor`, que
 corre en paralelo; si ves alguno, menciónalo, pero no es tu veredicto.
 
-**Entrada:** la base (por defecto `origin/develop`) y, si lo hay, qué pretende el cambio (encargo, descripción de
+**Entrada:** la base (por defecto `origin/dev`) y, si lo hay, qué pretende el cambio (encargo, descripción de
 la PR o mensajes de commit). Si no te lo dan, reconstrúyelo del diff y de los commits, y dilo.
 
 **Salida:** `APPROVE` o `REJECT`. Cualquier hallazgo bloqueante es `REJECT`.

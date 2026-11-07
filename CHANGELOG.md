@@ -1,6 +1,25 @@
 # Cambios
 
-## 0.9.1 (sin publicar)
+## 0.9.2 (2026-11-07)
+
+Sin cambios en `orq` ni en el instalador: solo cómo se desarrolla y se publica el repo
+([`docs/flujo-de-trabajo.md`](docs/flujo-de-trabajo.md)). Es la primera versión que se publica con este flujo, con
+tag y notas.
+
+- **Dos repos, una rama larga en cada uno:** el de desarrollo, privado, con `dev` (sustituye a `develop`, `pre` y
+  `main`); el público, con `main`, que solo recibe versiones publicadas, un commit por versión y sin el historial
+  de desarrollo.
+- **Versiones con tag:** una PR de versión sube `__version__` y pone la fecha en su sección del CHANGELOG; el tag
+  anotado `vX.Y.Z` en ese commit de `dev` lanza `publish` (antes lo lanzaba cada push a `main`), que comprueba el
+  tag, las notas y los checks y abre en el público la PR `release/X.Y.Z`.
+- **Notas de cada versión:** la sección del CHANGELOG va en el commit público y en el cuerpo de la PR (antes solo
+  decían de qué commit venían). Al mergear la PR, `release` crea en el público el tag `vX.Y.Z` y la GitHub
+  Release con esas notas.
+- **Scripts:** `release_notes.py` (nuevo: la versión y su sección del CHANGELOG, para los dos workflows) y
+  `publish.py` (publica desde un tag, se niega si el tag, la versión o las notas no cuadran, y crea o actualiza
+  la PR pública).
+
+## 0.9.1 (2026-11-07)
 
 Sin cambios en `orq` ni en el instalador: solo cómo se desarrolla y se publica el repo
 ([`docs/flujo-de-trabajo.md`](docs/flujo-de-trabajo.md)).
