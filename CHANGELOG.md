@@ -1,5 +1,22 @@
 # Cambios
 
+## 0.9.1 (sin publicar)
+
+Sin cambios en `orq` ni en el instalador: solo cómo se desarrolla y se publica el repo
+([`docs/flujo-de-trabajo.md`](docs/flujo-de-trabajo.md)).
+
+- **GitHub Actions, sin IA:** `checks` (tests con Python 3.9 y filtro de datos privados) en cada push y PR;
+  `publish` (de la `main` de desarrollo a una PR `release/<versión>` en el repo público, solo si las
+  comprobaciones pasan).
+- **Revisión de IA en local, antes de subir:** dos revisores, `code-verifier` y `privacy-auditor`
+  (`.claude/agents/`), que tienen que dar APPROVE. `AGENTS.md` (y `CLAUDE.md`, que lo importa) explica a
+  cualquier arnés las reglas del repo y esa puerta.
+- **`scripts/check-private.py`:** palabras privadas, correos que no son noreply de GitHub, rutas personales y
+  patrones de secretos, en los archivos y en los commits nuevos. Enmascara lo que encuentra.
+- **`scripts/publish.py`:** el contenido de la `main` de desarrollo como un commit nuevo sobre la `main` pública,
+  sin historial; se niega si la versión ya está publicada con otro contenido.
+- **Tests:** sin la versión antigua instalada (en CI), los golden de esa versión salen como *skipped* con su motivo.
+
 ## 0.9.0 (sin publicar; para la prueba con la app de Codex)
 
 Codex, superficie **app** (🧪: construido a partir del código de Codex rust-v0.166.0, sin haberlo ejecutado; la

@@ -1,0 +1,76 @@
+# Publishes the development main to the public repo: the content of main as one new commit on top of the public
+# main, on branch release/<version>, and a pull request that the owner merges. Only in the development repo:
+# in the public repo (which receives this same file) every job is skipped.
+name: publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  DEV_REPO: JLarry00/orquesta-dev
+  PUBLIC_REPO: JLarry00/orquesta
+  PUBLISH_NAME: JLarry00
+  PUBLISH_EMAIL: 202979278+JLarry00@users.noreply.github.com
+
+jobs:
+  # The same checks as on every push, on this exact commit: if they fail, nothing is published.
+  checks:
+    if: github.repository == 'JLarry00/orquesta-dev' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/checks.yml
+    permissions:
+      contents: read
+    secrets:
+      FORBIDDEN_WORDS: ${{ secrets.FORBIDDEN_WORDS }}
+
+  publish:
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.9"
+      - name: Commit de publicación en release/<versión>
+        id: release
+        env:
+          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        run: |
+          set -eu
+          if [ -z "$PUBLIC_REPO_TOKEN" ]; then
+            echo "::error::Falta el secreto PUBLIC_REPO_TOKEN (docs/flujo-de-trabajo.md)."; exit 1
+          fi
+          python scripts/publish.py --push --source "$GITHUB_SHA" \
+            --public "https://x-access-token:${PUBLIC_REPO_TOKEN}@github.com/${PUBLIC_REPO}.git"
+      - name: PR a la main pública
+        if: steps.release.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          VERSION: ${{ steps.release.outputs.version }}
+          BRANCH: ${{ steps.release.outputs.branch }}
+          PUSHED: ${{ steps.release.outputs.pushed }}
+        run: |
+          set -eu
+          open=$(gh pr list -R "$PUBLIC_REPO" --head "$BRANCH" --base main --state open --json url --jq '.[0].url')
+          if [ -n "$open" ]; then
+            if [ "$PUSHED" = true ]; then state="la rama se ha actualizado"; else state="la rama ya estaba al día"; fi
+            echo "Ya hay una PR abierta para $BRANCH: $open ($state)."
+          else
+            gh pr create -R "$PUBLIC_REPO" --base main --head "$BRANCH" --title "Release $VERSION" \
+              --body "Content of the development main branch at \`$GITHUB_SHA\`. Changes: CHANGELOG.md, section $VERSION.
+
+          Merge it with a merge commit once the required checks pass."
+          fi

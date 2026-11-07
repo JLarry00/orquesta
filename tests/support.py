@@ -28,6 +28,10 @@ APPROVER_RE = re.compile(r"\b(OK|orden) de [A-ZÁÉÍÓÚÑ]\w*")  # v1 hard-cod
 UUID_RE = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
 
 
+V1_MISSING = ("sin la v1 (ORQ_V1_DIR o la instalación antigua): no se vuelve a ejecutar la v1; "
+              "el paquete sí se compara con los golden guardados")
+
+
 def v1_source():
     """Folder with the v1 code, or None if this machine has no v1 (e.g. a clean install)."""
     d = Path(os.environ.get("ORQ_V1_DIR") or Path.home() / ".claude/orquesta").expanduser()
